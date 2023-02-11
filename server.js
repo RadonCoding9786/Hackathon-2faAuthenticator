@@ -2,15 +2,15 @@
 import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
-import helmet from 'helmet';
+//import helmet from 'helmet';
 
 import { fileURLToPath } from 'url';
 
 import healthRoutes from './routes/health-route.js';
 import swaggerRoutes from './routes/swagger-route.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+//const __filename = fileURLToPath(import.meta.url);
+//const __dirname = path.dirname(__filename);
 
 const app = express();
 
