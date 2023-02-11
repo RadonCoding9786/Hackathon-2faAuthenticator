@@ -44,11 +44,35 @@ export const refreshUserPasscode = (userID) => {
 
   for (var i in passcodes) {
     if (passcodes[i].user_id == userID) {
-       projects[i].passcode = newPasscode;
+       passcodes[i].passcode = newPasscode;
        return;
     }
   }
   errorMessage(); //run if we coulnt find it 
 }
+
+
+export const verifyPasscode = (userID,passcode) => {
+  let passcodeMatches = false;
+
+  for (var i in passcodes) {
+    if (passcodes[i].user_id == userID) {
+      if(passcodes[i].passcode == passcode){
+        passcodeMatches = true;
+      }
+      break;//no point checking further as user_id is unique
+    }
+  }
+  if(passcodeMatches){
+    //tell client verification is successfull
+  }
+  else{
+    //tell client it isnt
+  }
+
+}
+
+
+
 
 export const getAllPasscodes = () => passcodes
