@@ -32,20 +32,25 @@ app.get('/verify', function(req, res) {
 });
 
 let user = null;
+let int = null;
 app.ws('/', function(ws, req) {
+  let count = 0
+  int = setInterval(() => {
+    generatePasscode(0);
+    // generate a new passcode and send it to be rendered on page
+    ws.send(count)
+    count++
+  }, 1000)
+
   ws.on('message', async function (token) {
     user = await dao.get("SELECT * FROM users WHERE token = ?", [token]);
     if(!user) ws.close()
     console.log(user)
   });
 
-  let count = 0
-  setInterval(() => {
-    generatePasscode(0);
-    // generate a new passcode and send it to be rendered on page
-    ws.send(count)
-    count++
-  }, 1000)
+  ws.on('close', function() {
+    clearInterval(int)
+  });
 });
 
 app.use('/api/auth', authRoutes);

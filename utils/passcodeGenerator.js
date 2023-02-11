@@ -11,7 +11,7 @@ export const generatePasscode = (userID) => {
   }
   */
 
-  passcodes.push(obj)
+  // passcodes.push(obj)
 }
 
 function generateCode(){
