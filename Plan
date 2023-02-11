@@ -1,0 +1,30 @@
+Plan:
+
+
+Front end:
+
+- have a html page for the user login(password and username)
+- another page asking for 2fa code
+
+
+- then another page displaying the code(different url i guess to simulate the "app")
+- then say if it has been successfull or not(try again for both password and 2fa code)
+
+- if successfull, display page of successfull outcome
+
+
+
+Back end:
+
+- connect to database to store and register a user
+- not needed for 2fa as that will be on front end
+
+- additional: hash the password
+
+
+2fa:
+
+- generate random 4 digit number every 30 seconds
+- display some color design/ icon idk
+
+
