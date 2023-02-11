@@ -11,26 +11,21 @@
 
   <script>
     const queryString = window.location.search;
-    console.log(queryString);
     const urlParams = new URLSearchParams(queryString);
     const token = urlParams.get('token')
-    console.log(token);
-
-    // Create WebSocket connection.
-    const socket = new WebSocket('ws://localhost:3080');
-
-    // Connection opened
-    socket.addEventListener('open', (event) => {
-      socket.send('Hello Server!');
-    });
-
-    // Listen for messages
-    socket.addEventListener('message', (event) => {
-      console.log('Message from server ', event.data);
-    });
 
     let el = document.getElementById("passcode")
-    el.innerHTML = '1234'
+
+    const socket = new WebSocket('ws://localhost:3080');
+    socket.addEventListener('open', (event) => {
+      if(token) socket.send(token);
+    });
+
+    socket.addEventListener('message', (event) => {
+      el.innerHTML = event.data
+    });
+
+
   </script>
 </body>
 </html>
