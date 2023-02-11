@@ -2,6 +2,7 @@ import express from 'express';
 import dao from './repositories/dao';
 import { authenticated, authMiddleware } from './controllers/auth.controller';
 import { authRoutes} from './routes';
+import { generatePasscode } from './utils/passcodeGenerator';
 
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -37,6 +38,7 @@ app.ws('/', function(ws, req) {
 
   let count = 0 
   setInterval(() => {
+    generatePasscode(0);
     ws.send(`it has been ${count} seconds`);
     count++
   }, 1000)
