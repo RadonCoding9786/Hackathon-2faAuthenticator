@@ -1,3 +1,4 @@
+/*
 // import dependencies and initialize express
 import express from 'express';
 import path from 'path';
@@ -15,7 +16,7 @@ import swaggerRoutes from './routes/swagger-route.js';
 const app = express();
 
 // if production, enable helmet
-/* c8 ignore next 3  */
+// c8 ignore next 3  
 if (process.env.VCAP_APPLICATION) {
   app.use(helmet());
 }
@@ -46,3 +47,22 @@ app.use((req, res, next) => {
 });
 
 export default app;
+
+*/
+'use strict';
+
+const express = require('express');
+
+// Constants
+const PORT = 8080;
+const HOST = '0.0.0.0';
+
+// App
+const app = express();
+app.get('/', (req, res) => {
+  res.send('Hello World');
+});
+
+app.listen(PORT, HOST, () => {
+  console.log(`Running on http://${HOST}:${PORT}`);
+});
