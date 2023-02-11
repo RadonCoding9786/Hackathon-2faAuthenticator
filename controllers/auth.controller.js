@@ -2,6 +2,7 @@ import { closed } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 import jwt from 'jsonwebtoken';
 import {errorMessage} from "../error.js";
+import { verifyPasscode } from '../utils/passcodeGenerator';
 
 const bcrypt = require('bcrypt');
 const crypto = require("crypto");
@@ -68,20 +69,20 @@ export const register = async (req, res) => {
 }
 
 export const verify = async (req, res) => {
-    const token = req.params.token;
+  const { token, passcode } = req.body
 
-    try {
-        const decoded = jwt.verify(token, VERIFICATION_TOKEN_SECRET, (err, dec) => { if(!err) return dec });
-        const { user_id } = decoded;
-        const user = await closed.getUserById(user_id);
-        if(user && !user.verification) {
-            await closed.setUserVerified(user_id, 1);
-            return res.redirect('https://neem.gq/');
-        }
-    } catch (e) {
-        console.error(e);
-        return next();
-    }
+  let user = await dao.get("SELECT * FROM users WHERE token = ?", [token]);
+  if(!user) errorMessage(res, 'Could not find user')
+  let verified = verifyPasscode(user.user_id, passcode)
+
+  if(!verified) errorMessage(res, 'Passcode was not valid')
+  
+  res.json({
+    status: 'success',
+    msg: 'User authenticated',
+  });
+
+  res.status(200);
 }
 
 export const login = async (req, res) => {

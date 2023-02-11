@@ -24,7 +24,6 @@ function generateCode(){
   let round = Math.trunc(decimal);
 
   let str = round.toString();
-  console.log(str.padStart(4, "0"));
 
   return str.padStart(4, "0"); 
 }
@@ -51,6 +50,21 @@ export const refreshUserPasscode = (userID) => {
     }
   }
   errorMessage(); //run if we coulnt find it 
+}
+
+export const verifyPasscode = (userID,passcode) => {
+  let passcodeMatches = false;
+
+  for (var i in passcodes) {
+    if (passcodes[i].user_id === userID) {
+      if(Number(passcodes[i].passcode) === passcode){
+        passcodeMatches = true;
+      }
+      break;//no point checking further as user_id is unique
+    }
+  }
+  
+  return passcodeMatches
 }
 
 export const getAllPasscodes = () => passcodes
