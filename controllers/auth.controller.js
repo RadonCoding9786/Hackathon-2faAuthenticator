@@ -12,7 +12,6 @@ const saltRounds = 10;
 
 // message to display to the user if they succeeded the 2fa authentication or not
 
-
 export const authMiddleware = async (req, res, next) => {
     const token = req.header('Access-Token');
     if(!token) {

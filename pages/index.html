@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test</title>
+</head>
+<body>
+  <span id="passcode"></span>
+
+  <script>
+    const queryString = window.location.search;
+    console.log(queryString);
+    const urlParams = new URLSearchParams(queryString);
+    const token = urlParams.get('token')
+    console.log(token);
+
+    // Create WebSocket connection.
+    const socket = new WebSocket('ws://localhost:3080');
+
+    // Connection opened
+    socket.addEventListener('open', (event) => {
+      socket.send('Hello Server!');
+    });
+
+    // Listen for messages
+    socket.addEventListener('message', (event) => {
+      console.log('Message from server ', event.data);
+    });
+
+    let el = document.getElementById("passcode")
+    el.innerHTML = '1234'
+  </script>
+</body>
+</html>

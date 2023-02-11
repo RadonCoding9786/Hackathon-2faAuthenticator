@@ -3,10 +3,12 @@ import dao from './repositories/dao';
 import { authenticated, authMiddleware } from './controllers/auth.controller';
 import { authRoutes} from './routes';
 
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 export const app = express();
+var expressWs = require('express-ws')(app);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -24,6 +26,22 @@ dao.setupDbForDev();
 //     windowMs: 5 * 60 * 1000,
 //     max: 1
 // });
+app.get('/verify', function(req, res) {
+  res.sendFile(path.join(__dirname, './pages/index.html'));
+});
+
+app.ws('/', function(ws, req) {
+  ws.on('message', function(msg) {
+    console.log(msg);
+  });
+
+  let count = 0 
+  setInterval(() => {
+    ws.send(`it has been ${count} seconds`);
+    count++
+  }, 1000)
+});
+
 app.use('/api/auth', authRoutes);
 
 app.use((req, res, next) => {
