@@ -1,0 +1,8 @@
+
+
+
+function generateCode(){
+    return Math.random() * (9999-1) + 1; 
+}
+
+
