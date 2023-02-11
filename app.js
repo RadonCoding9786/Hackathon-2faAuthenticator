@@ -30,14 +30,18 @@ app.get('/verify', function(req, res) {
   res.sendFile(path.join(__dirname, './pages/index.html'));
 });
 
+let user = null;
 app.ws('/', function(ws, req) {
-  ws.on('message', function(msg) {
-    console.log(msg);
+  ws.on('message', async function (token) {
+    user = await dao.get("SELECT * FROM users WHERE token = ?", [token]);
+    if(!user) ws.close()
+    console.log(user)
   });
 
-  let count = 0 
+  let count = 0
   setInterval(() => {
-    ws.send(`it has been ${count} seconds`);
+    // generate a new passcode and send it to be rendered on page
+    ws.send(count)
     count++
   }, 1000)
 });
