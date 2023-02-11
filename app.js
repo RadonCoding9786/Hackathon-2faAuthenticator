@@ -2,7 +2,7 @@ import express from 'express';
 import dao from './repositories/dao';
 import { authenticated, authMiddleware } from './controllers/auth.controller';
 import { authRoutes} from './routes';
-import { generatePasscode } from './utils/passcodeGenerator';
+import { generatePasscode, getUserPasscode, refreshUserPasscode } from './utils/passcodeGenerator';
 
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -31,21 +31,30 @@ app.get('/verify', function(req, res) {
   res.sendFile(path.join(__dirname, './pages/index.html'));
 });
 
-let user = null;
-let int = null;
 app.ws('/', function(ws, req) {
-  let count = 0
-  int = setInterval(() => {
-    generatePasscode(0);
-    // generate a new passcode and send it to be rendered on page
-    ws.send(count)
-    count++
-  }, 1000)
+  let user = null;
+  let int = null;
+  let passcodeExists = false;
+
+  const response = () => {
+    let passcode;
+    if(passcodeExists) {
+      passcode = refreshUserPasscode(user.user_id)
+    } else {
+      passcode = generatePasscode(user.user_id)
+    }
+    
+    ws.send(passcode)
+  }
+
+  int = setInterval(response, 30000)
 
   ws.on('message', async function (token) {
     user = await dao.get("SELECT * FROM users WHERE token = ?", [token]);
     if(!user) ws.close()
-    console.log(user)
+    let passcode = getUserPasscode(user.user_id)
+    if(passcode !== undefined) passcodeExists = true
+    response()
   });
 
   ws.on('close', function() {

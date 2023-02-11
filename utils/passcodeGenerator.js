@@ -15,6 +15,8 @@ export const generatePasscode = (userID) => {
     user_id: userID,
     passcode: passcodeGenerated
   });
+
+  return passcodeGenerated
 }
 
 function generateCode(){
@@ -31,7 +33,7 @@ function generateCode(){
 
 export const getUserPasscode = (userID) => {
   // find the relevant user by user id
-  let passcode = passcodes.find(x => x.user_id === userID).passcode;
+  let passcode = passcodes.find(x => x.user_id === userID)?.passcode;
 
   return passcode;
 
@@ -43,9 +45,9 @@ export const refreshUserPasscode = (userID) => {
   let newPasscode = generateCode();
 
   for (var i in passcodes) {
-    if (passcodes[i].user_id == userID) {
-       projects[i].passcode = newPasscode;
-       return;
+    if (passcodes[i].user_id === userID) {
+      passcodes[i].passcode = newPasscode;
+      return newPasscode
     }
   }
   errorMessage(); //run if we coulnt find it 

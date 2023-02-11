@@ -8,21 +8,30 @@
 </head>
 <body>
   <span id="passcode"></span>
+  <span id="timer"></span>
 
   <script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const token = urlParams.get('token')
 
-    let el = document.getElementById("passcode")
+    let passcodeEL = document.getElementById("passcode")
+    let timerEL = document.getElementById("timer")
 
     const socket = new WebSocket('ws://localhost:3080');
     socket.addEventListener('open', (event) => {
       if(token) socket.send(token);
     });
 
+    let count = 30
+    let int = setInterval(() => {
+      count--
+      timerEL.innerHTML = count
+    }, 1000);
+
     socket.addEventListener('message', (event) => {
-      el.innerHTML = event.data
+      passcodeEL.innerHTML = event.data
+      count = 30
     });
 
 
