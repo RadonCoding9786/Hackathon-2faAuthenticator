@@ -1,22 +1,30 @@
+import { errorMessage } from "../error";
 
 let passcodes = []
 
 export const generatePasscode = (userID) => {
   
-  let passcode = generateCode();
+  let passcodeGenerated = generateCode();
   /*
   let obj = {
     user_id: '123123',
     passcode: 1234123
   }
   */
-
-  // passcodes.push(obj)
+  passcodes.push({
+    user_id: userID,
+    passcode: passcodeGenerated
+  });
 }
 
 function generateCode(){
-  console.log(Math.random() * (9999-1) + 1);
-  return Math.random() * (9999-1) + 1; 
+  let decimal = Math.random() * (9999-1) + 1;
+  let round = Math.trunc(decimal);
+
+  let str = round.toString();
+  console.log(str.padStart(4, "0"));
+
+  return str.padStart(4, "0"); 
 }
 
 
@@ -32,6 +40,15 @@ export const getUserPasscode = (userID) => {
 export const refreshUserPasscode = (userID) => {
   // create new passcode and change it
 
+  let newPasscode = generateCode();
+
+  for (var i in passcodes) {
+    if (passcodes[i].user_id == userID) {
+       projects[i].passcode = newPasscode;
+       return;
+    }
+  }
+  errorMessage(); //run if we coulnt find it 
 }
 
 export const getAllPasscodes = () => passcodes
