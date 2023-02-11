@@ -216,6 +216,10 @@ export class closed {
         return dao.run("INSERT INTO users (user_id, username, email, password) VALUES (?, ?, ?, ?)", [id, usrnm, pswd, eml]);
     }
 
+    static async insertToken(id,token){
+        return dao.run("UPDATE users SET token = ? WHERE user_id = ?",[token,id]);
+    }
+
     static async updateUser(id, usrnm, eml, frstnm, lstnm, desc) {
         dao.run("UPDATE users SET username = ?, email = ? WHERE user_id = ?", [usrnm, eml, id]);
         return dao.run("UPDATE user_profiles SET first_name = ?, last_name = ?, description = ? WHERE user_id = ?", [frstnm, lstnm, desc, id]);
@@ -235,9 +239,5 @@ export class closed {
 
     static async checkToken(tkn) {
         return dao.get("SELECT * FROM access WHERE token = ?", [tkn]);
-    }
-
-    static async insertToken(usrid, tkn, crt, exp) {
-        return dao.run("INSERT INTO access (user_id, token, created_at, expires_at) VALUES (?, ?, ?, ?)", [usrid, tkn, crt, exp]);
     }
 }

@@ -51,13 +51,13 @@ export const register = async (req, res) => {
         username,
         email,
         password,
-        token,
+        //dont need token from client
     } = req.body;
 
     bcrypt.hash(password, saltRounds, async (err, hash) => {
         if(!err) {
             let userID = crypto.randomBytes(16).toString("hex");
-            closed.insertUser(userID, username, email, hash,token).then(() => {
+            closed.insertUser(userID, username, email, hash).then(() => {
                     return res.json({ status: 'success' });
                 })
         } else {
@@ -98,16 +98,37 @@ export const login = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
 
     if(!match){
-        return errorMessage();
+        errorMessage();
     }
+    console.log(user);
 
+    let token = createToken(user.user_id);
+
+    console.log(token);
 
     res.json({
         status: 'success',
+        token: token,
     });
 
     res.status(200);
 }
+
+
+const createToken = (userID) => {
+    
+    let token = crypto.randomBytes(16).toString("hex");
+
+    console.log(token);
+    console.log(userID);
+
+    closed.insertToken(userID,token);
+
+    //tell client the token value
+    return token;
+}
+
+
 
 export const logout = async (req, res) => {
     const refreshToken = req.cookies['refresh_token'];
