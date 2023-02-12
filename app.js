@@ -15,11 +15,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.static(__dirname + '/public'));
 app.use(cookieParser({
-    origin: 'https://ancient-lake-5541.fly.dev',
+    origin: 'https://sparkling-quokka-8737e2.netlify.app',
     credentials: true,
 }));
 app.use(cors({
-  origin: 'https://ancient-lake-5541.fly.dev',
+  origin: 'https://sparkling-quokka-8737e2.netlify.app',
   optionsSuccessStatus: 200
 }));
 app.use(authMiddleware);
