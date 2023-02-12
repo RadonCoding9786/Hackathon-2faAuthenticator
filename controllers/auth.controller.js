@@ -1,7 +1,7 @@
 import { closed } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 import jwt from 'jsonwebtoken';
-import {errorMessage} from "../error.js";
+import { errorMessage } from "../error.js";
 import { verifyPasscode } from '../utils/passcodeGenerator';
 
 const bcrypt = require('bcrypt');
@@ -54,14 +54,23 @@ export const register = async (req, res) => {
         //dont need token from client
     } = req.body;
 
+    if(username == null || email == null || password == null) {
+      return errorMessage(res, 'Registration data is missing');
+  }
+
+  const user = await closed.getUserByUsername(username);
+  if(user) {
+      return errorMessage(res, 'Username is already in use');
+  }
+
     bcrypt.hash(password, saltRounds, async (err, hash) => {
         if(!err) {
             let userID = crypto.randomBytes(16).toString("hex");
             closed.insertUser(userID, username, email, hash).then(() => {
-                    return res.json({ status: 'success' });
-                })
+                return res.json({ status: 'success' });
+            })
         } else {
-            errorMessage();
+            errorMessage(res, 'There was an error registering');
         }
     });
 
@@ -95,16 +104,17 @@ export const login = async (req, res) => {
         user = await closed.getUserByEmail(email);
     }
 
+    if(!user) {
+      return errorMessage(res, 'Invalid username or password');
+  }
+
     const match = await bcrypt.compare(password, user.password);
 
-    if(!match){
-        errorMessage();
+    if(!match) {
+      return errorMessage(res, 'Invalid username or password');
     }
-    console.log(user);
 
     let token = createToken(user.user_id);
-
-    console.log(token);
 
     res.json({
         status: 'success',
