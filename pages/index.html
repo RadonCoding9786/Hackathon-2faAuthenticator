@@ -39,16 +39,17 @@
         count = 30
       });
 
-      btnEL.addEventListener('click', () => copyContent)
       const copyContent = async () => {
         let text = passcodeEL.innerHTML
         try {
           await navigator.clipboard.writeText(text);
-          console.log('Content copied to clipboard');
+          btnEL.innerHTML = 'Copied successfully'
         } catch (err) {
           console.error('Failed to copy: ', err);
         }
       }
+
+      btnEL.addEventListener('click', copyContent)
     } else {
       passcodeEL.innerHTML = 'Invalid token'
       btnEL.style.display = 'none'

@@ -15,10 +15,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.static(__dirname + '/public'));
 app.use(cookieParser({
-    origin: 'https://neem.gq/',
+    origin: 'https://ancient-lake-5541.fly.dev',
     credentials: true,
 }));
-app.use(cors());
+app.use(cors({
+  origin: 'https://ancient-lake-5541.fly.dev',
+  optionsSuccessStatus: 200
+}));
 app.use(authMiddleware);
 
 dao.setupDbForDev();
