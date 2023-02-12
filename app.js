@@ -37,6 +37,7 @@ app.ws('/', function(ws, req) {
   let passcodeExists = false;
 
   const response = () => {
+    if(!user) return
     let passcode;
     if(passcodeExists) {
       passcode = refreshUserPasscode(user.user_id)
@@ -51,7 +52,7 @@ app.ws('/', function(ws, req) {
 
   ws.on('message', async function (token) {
     user = await dao.get("SELECT * FROM users WHERE token = ?", [token]);
-    if(!user) ws.close()
+    if(!user) return ws.close()
     let passcode = getUserPasscode(user.user_id)
     if(passcode !== undefined) passcodeExists = true
     response()

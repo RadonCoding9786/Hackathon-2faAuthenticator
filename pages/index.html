@@ -7,7 +7,10 @@
   <title>Test</title>
 </head>
 <body>
-  <span id="passcode"></span>
+  <div>
+     <span id="passcode"></span>
+    <button id="btn" >copy passcode</button>
+  </div>
   <span id="timer"></span>
 
   <script>
@@ -17,24 +20,39 @@
 
     let passcodeEL = document.getElementById("passcode")
     let timerEL = document.getElementById("timer")
+    let btnEL = document.getElementById("btn")
 
     const socket = new WebSocket('ws://localhost:3080');
     socket.addEventListener('open', (event) => {
       if(token) socket.send(token);
     });
 
-    let count = 30
-    let int = setInterval(() => {
-      count--
-      timerEL.innerHTML = count
-    }, 1000);
+    if(token) {
+      let count = 30
+      let int = setInterval(() => {
+        count--
+        timerEL.innerHTML = count
+      }, 1000);
 
-    socket.addEventListener('message', (event) => {
-      passcodeEL.innerHTML = event.data
-      count = 30
-    });
+      socket.addEventListener('message', (event) => {
+        passcodeEL.innerHTML = event.data
+        count = 30
+      });
 
-
+      btnEL.addEventListener('click', () => copyContent)
+      const copyContent = async () => {
+        let text = passcodeEL.innerHTML
+        try {
+          await navigator.clipboard.writeText(text);
+          console.log('Content copied to clipboard');
+        } catch (err) {
+          console.error('Failed to copy: ', err);
+        }
+      }
+    } else {
+      passcodeEL.innerHTML = 'Invalid token'
+      btnEL.style.display = 'none'
+    }
   </script>
 </body>
 </html>
